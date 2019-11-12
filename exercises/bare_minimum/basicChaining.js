@@ -10,11 +10,27 @@
 
 var fs = require('fs');
 var Promise = require('bluebird');
+var getGitHubProfileAsync = require('./promisification.js');
+// var pluckFirstLineFromFileAsync = require('./promiseConstructor.js');
+var promiseConstructor = require('./promiseConstructor.js');
 
 
-
-var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
+var fetchProfileAndWriteToFile = function (readFilePath, writeFilePath) {
   // TODO
+  // /Users/student/Desktop/hrsf124-promises/test/bare_minimum/../files/github_handle.txt
+  // fetch api with user's profile
+
+  return promiseConstructor.pluckFirstLineFromFileAsync(readFilePath)
+    .then((username) => {
+      getGitHubProfileAsync.getGitHubProfileAsync(username)
+        .then((profile) => {
+          fs.writeFile(writeFilePath, JSON.stringify(profile), (err) => {
+            if (err) {
+              throw err;
+            }
+          });
+        });
+    });
 };
 
 // Export these functions so we can test them
